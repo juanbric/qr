@@ -51,8 +51,8 @@ export default function Home() {
         }}
       />
       <button onClick={uploadFile}> Upload Image</button>
-      {imageUrls.map((url) => {
-        return <img src={url} />;
+      {imageUrls.map((url, i) => {
+        return <img key={i} src={url} />;
       })}
     </>
   );
