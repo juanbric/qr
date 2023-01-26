@@ -39,8 +39,8 @@ export default function Test() {
           }}
         />
         <button onClick={showFile}>Show</button>
-        {qrCodes?.map((qr) => (
-          <img src={qr} />
+        {qrCodes?.map((qr, i) => (
+          <img key={i} src={qr} />
         ))}
       </section>
     </>
