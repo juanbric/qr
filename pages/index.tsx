@@ -10,31 +10,55 @@ import {
 import { storage } from "../config/firebase";
 //@ts-ignore
 import { v4 } from "uuid";
+import QRCode from "qrcode";
 
 export default function Home() {
   const [imageUpload, setImageUpload] = useState(null);
-  const [imageUrls, setImageUrls] = useState([]);
+  const [imageUrls, setImageUrls] = useState<any>([]);
+  const imagesListRef = ref(storage, "images/");
+  const [qrCodes, setQrcodes] = useState([]);
+ 
 
-  // const imagesListRef = ref(storage, "images/");
-  // const uploadFile = () => {
-  //   if (imageUpload == null) return;
-  //   const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
-  //   uploadBytes(imageRef, imageUpload).then((snapshot) => {
-  //     getDownloadURL(snapshot.ref).then((url) => {
-  //       setImageUrls((prev) => [...prev, url]);
-  //     });
-  //   });
-  // };
+  const uploadFile = () => {
+    if (imageUpload == null) return;
+    for (let i = 0; i < imageUpload.length; i++) {
+      
+      const imageName = imageUpload[i].name.split(".").shift();
+      const url = `http://localhost:3000/${imageName}`
+      const imageRef = ref(
+        storage,
+        `images/${imageName}/${imageUpload[i].name}`
+      );
+      const qrRef = ref(
+        storage,
+        `images/${imageName}/QR${imageUpload[i].name}`
+      );
 
-  // useEffect(() => {
-  //   listAll(imagesListRef).then((response) => {
-  //     response.items.forEach((item) => {
-  //       getDownloadURL(item).then((url) => {
-  //         setImageUrls((prev) => [...prev, url]);
-  //       });
-  //     });
-  //   });
-  // }, []);
+      
+      QRCode.toDataURL(url, { margin: 2 }, (err, url) => {
+        if (err) return console.error(err);
+        var arr = url.split(","),
+          mime = arr[0].match(/:(.*?);/)[1],
+          bstr = atob(arr[1]),
+          n = bstr.length,
+          u8arr = new Uint8Array(n);
+        while (n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        var file = new Blob([u8arr], { type: mime });
+        const qrCodeFile = new File([file], `${imageName}.png`, {
+          type: "image/png",
+        });
+        qrCodes.push(qrCodeFile);
+      });
+      setQrcodes(qrCodes);
+
+      console.log("qr", qrCodes[i]);
+      console.log("img", imageUpload[i]);
+      uploadBytes(imageRef, imageUpload[i]);
+      uploadBytes(qrRef, qrCodes[i]);
+    }
+  };
 
   return (
     <>
@@ -44,17 +68,17 @@ export default function Home() {
         url={undefined}
         image={"logo/svg"}
       />
-      {/* <input
-        type="file"
-        onChange={(event) => {
-          setImageUpload(event.target.files[0]);
-        }}
-      />
-      <button onClick={uploadFile}> Upload Image</button>
-      {imageUrls.map((url, i) => {
-        return <img key={i} src={url} />;
-      })} */}
+      <section>
+        <input
+          type="file"
+          multiple
+          onChange={(event: any) => {
+            setImageUpload(event.target.files);
+          }}
+        />
+        <button onClick={uploadFile}> Upload</button>
+        {/* <img src={qrcode} /> */}
+      </section>
     </>
   );
 }
-
