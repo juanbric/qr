@@ -17,27 +17,29 @@ export default function Home() {
   const [imageUrls, setImageUrls] = useState<any>([]);
   const imagesListRef = ref(storage, "images/");
   const [qrCodes, setQrcodes] = useState([]);
- 
 
   const uploadFile = () => {
     if (imageUpload == null) return;
+    //@ts-ignore
     for (let i = 0; i < imageUpload.length; i++) {
-      
+      //@ts-ignore
       const imageName = imageUpload[i].name.split(".").shift();
-      const url = `http://localhost:3000/${imageName}`
+      const url = `http://localhost:3000/${imageName}`;
       const imageRef = ref(
         storage,
+        //@ts-ignore
         `images/${imageName}/${imageUpload[i].name}`
       );
       const qrRef = ref(
         storage,
+        //@ts-ignore
         `images/${imageName}/QR${imageUpload[i].name}`
       );
 
-      
       QRCode.toDataURL(url, { margin: 2 }, (err, url) => {
         if (err) return console.error(err);
         var arr = url.split(","),
+          //@ts-ignore
           mime = arr[0].match(/:(.*?);/)[1],
           bstr = atob(arr[1]),
           n = bstr.length,
@@ -49,6 +51,7 @@ export default function Home() {
         const qrCodeFile = new File([file], `${imageName}.png`, {
           type: "image/png",
         });
+        //@ts-ignore
         qrCodes.push(qrCodeFile);
       });
       setQrcodes(qrCodes);
