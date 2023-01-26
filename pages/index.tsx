@@ -11,17 +11,24 @@ import { storage } from "../config/firebase";
 //@ts-ignore
 import { v4 } from "uuid";
 import QRCode from "qrcode";
+import Spinner from "@/components/Spinner";
 
 export default function Home() {
   const [imageUpload, setImageUpload] = useState(null);
   const [imageUrls, setImageUrls] = useState<any>([]);
   const imagesListRef = ref(storage, "images/");
   const [qrCodes, setQrcodes] = useState([]);
+  const [isUploaded, setIsUploaded] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
-  //   uploadFile();
-  //   window.location.reload();
-  // }, [uploaded === true]);
+  useEffect(() => {
+    if (isUploaded) {
+      setLoading(true);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    }
+  }, [isUploaded]);
 
   const uploadFile = () => {
     if (imageUpload == null) return;
@@ -29,8 +36,8 @@ export default function Home() {
     for (let i = 0; i < imageUpload.length; i++) {
       //@ts-ignore
       const imageName = imageUpload[i].name;
-       //@ts-ignore
-       const imageNameClean = imageUpload[i].name.split(".").shift();
+      //@ts-ignore
+      const imageNameClean = imageUpload[i].name.split(".").shift();
       const url = `http://localhost:3000/${imageName}`;
       const imageRef = ref(
         storage,
@@ -55,7 +62,7 @@ export default function Home() {
           u8arr[n] = bstr.charCodeAt(n);
         }
         var file = new Blob([u8arr], { type: mime });
-        //Change the file name of the QR code to match that of the original image 
+        //Change the file name of the QR code to match that of the original image
         const qrCodeFile = new File([file], `${imageName}`, {
           type: "image/png",
         });
@@ -69,6 +76,8 @@ export default function Home() {
 
       uploadBytes(imageRef, imageUpload[i]);
       uploadBytes(qrRef, qrCodes[i]);
+
+      setIsUploaded(true);
     }
   };
 
@@ -89,7 +98,11 @@ export default function Home() {
           }}
         />
         <button onClick={uploadFile}> Upload</button>
-        {/* <img src={qrcode} /> */}
+        {loading ? (
+          <div className="flex">
+            <Spinner />
+          </div>
+        ) : null}
       </section>
     </>
   );
