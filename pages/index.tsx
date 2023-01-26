@@ -1,5 +1,5 @@
 import MetaTag from "@/components/MetaTag";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   ref,
   uploadBytes,
@@ -55,6 +55,7 @@ export default function Home() {
 
       console.log("qr", qrCodes[i]);
       console.log("img", imageUpload[i]);
+
       uploadBytes(imageRef, imageUpload[i]);
       uploadBytes(qrRef, qrCodes[i]);
     }
