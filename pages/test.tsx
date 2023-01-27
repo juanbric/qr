@@ -8,6 +8,17 @@ const Test = () => {
   const [imageList, setImageList] = useState<any>([]);
   const [imgData, setImgData] = useState<any>();
 
+  async function main() {
+    let folderNames;
+    const allFolder = ref(storage, "images/");
+    folderNames = await listAll(allFolder).then((res) => {
+      return res.prefixes.map((path) => path?._location?.path_);
+    });
+    const cleanFolderNames = folderNames.map((name) => name.replace("images/", ""));
+    console.log("folders", cleanFolderNames);
+  }
+main();
+
 
   useEffect(() => {
     const allFolder = ref(storage, "images/");
@@ -26,7 +37,8 @@ const Test = () => {
       });
     });
   }, []);
-  console.log("img list", imgData);
+
+  
 
   return (
     <>
