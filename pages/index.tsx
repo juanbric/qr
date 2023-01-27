@@ -36,7 +36,7 @@ export default function Home() {
       const imageName = imageUpload[i].name;
       //@ts-ignore
       const imageNameClean = imageUpload[i].name.split(".").shift();
-      const url = `http://localhost:3000/${imageName}`;
+      const url = `https://qr-photo-app.vercel.app/${imageName}`;
       const imageRef = ref(
         storage,
         //@ts-ignore
@@ -82,21 +82,20 @@ export default function Home() {
   return (
     <>
       <MetaTag
-        title={"QR App"}
+        title={"Sube"}
         description={"Genera QR y pagina de individuo por cada foto subida"}
         url={undefined}
-        image={"logo/svg"}
       />
       <section>
         <input
           type="file"
-          className="file:mr-4 file:py-2 mb-8 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-700  file:text-white  hover:file:bg-[#DD3F31]"
+          className="file:mr-4 file:py-2 mb-8 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-700  file:text-white  hover:file:bg-[#FF0066]"
           multiple
           onChange={(event: any) => {
             setImageUpload(event.target.files);
           }}
         />
-        <button onClick={uploadFile}  className="py-2 mb-8 px-4 rounded-lg border-0 text-sm font-semibold bg-gray-700  text-white  hover:bg-[#DD3F31]">Sube</button>
+        <button onClick={uploadFile}  className="py-2 mb-8 px-4 rounded-lg border-0 text-sm font-semibold bg-gray-700  text-white  hover:bg-[#FF0066]">Sube</button>
         {loading ? (
           <div className="flex">
             <Spinner />

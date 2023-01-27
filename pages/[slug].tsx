@@ -46,16 +46,16 @@ const Slug = ({ photo, slug }: { photo: any; slug: any }) => {
         title={slug[0].toUpperCase() + slug.slice(1)}
         description={slug[0].toUpperCase() + slug.slice(1)}
         url={slug[0].toUpperCase() + slug.slice(1)}
-        image={"logo/svg"}
       />
       <section>
+        <h1 className="text-2xl dark:text-white mb-8">{slug[0].toUpperCase() + slug.slice(1)}</h1>
         {photo
           .filter(
             (url: string) =>
               !url.includes(`QR${slug[0].toUpperCase()}${slug.slice(1)}`)
           )
           .map((url: string, i: any) => (
-            <img src={url} key={i} />
+            <img src={url} key={i} className="rounded-lg"/>
           ))}
       </section>
     </>

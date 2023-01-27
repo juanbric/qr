@@ -38,10 +38,9 @@ const Subidas = ({ photo, slug }: { photo: any; slug: any }) => {
   return (
     <>
       <MetaTag
-        title={"Test"}
+        title={"Subidas"}
         description={"Genera QR y pagina de individuo por cada foto subida"}
         url={undefined}
-        image={"logo/svg"}
       />
       <section>
         {filteredImageList.map((url: any, i: any) => {
