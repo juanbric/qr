@@ -4,19 +4,18 @@ import { getDownloadURL, listAll, ref } from "firebase/storage";
 import React, { useEffect, useState } from "react";
 
 export const getStaticPaths = async () => {
-  const allFolder = ref(storage, "images/");
+  const allFolder = ref(storage, "/images");
   const folderNames = await listAll(allFolder).then((res) => {
+    //@ts-ignore
     return res.prefixes.map((path) => path?._location?.path_);
   });
-  
   const cleanFolderNames = folderNames.map((name) =>
-  name.replace("images/", "")
+    name.replace("images/", "")
   );
-  
+
   const paths = cleanFolderNames.map((name) => {
-    console.log("this is what im' gettiiiiinggg", cleanFolderNames)
     return {
-      params: { slug: name.toString() },
+      params: { slug: name.toLowerCase() },
     };
   });
 
@@ -26,20 +25,39 @@ export const getStaticPaths = async () => {
   };
 };
 
-export async function getStaticProps({ params }: { params: any }) {
-   console.log("getStaticProooooooooooooooooops called with params: ", params);
-  
-   return {
-    props: { slug: params.slug },
-    revalidate: 1,
+export const getStaticProps = async (context: any) => {
+  const slug = context.params.slug;
+  const upperCaseSlug = slug[0].toUpperCase() + slug.slice(1);
+  const specificFolder = ref(storage, `/images/${upperCaseSlug}`);
+  const items = await listAll(specificFolder).then((res) => res.items);
+  const imageList = await Promise.all(
+    items.map(async (item) => await getDownloadURL(item))
+  );
+  return {
+    props: { photo: imageList, slug },
   };
-}
+};
 
-const Slug = ({ slug }: { slug: any }) => {
+const Slug = ({ photo, slug }: { photo: any; slug: any }) => {
+  console.log("", photo);
   return (
     <>
-      <MetaTag title={slug} description={slug} url={slug} image={"logo/svg"} />
-      <section>Hello {slug}</section>
+      <MetaTag
+        title={slug[0].toUpperCase() + slug.slice(1)}
+        description={slug[0].toUpperCase() + slug.slice(1)}
+        url={slug[0].toUpperCase() + slug.slice(1)}
+        image={"logo/svg"}
+      />
+      <section>
+        {photo
+          .filter(
+            (url: string) =>
+              !url.includes(`QR${slug[0].toUpperCase()}${slug.slice(1)}`)
+          )
+          .map((url: string, i: any) => (
+            <img src={url} key={i} />
+          ))}
+      </section>
     </>
   );
 };

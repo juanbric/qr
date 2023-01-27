@@ -1,29 +1,19 @@
 import MetaTag from "@/components/MetaTag";
 import { storage } from "@/config/firebase";
-import { getDownloadURL, listAll, ref } from "firebase/storage";
+import { getDownloadURL, getMetadata, listAll, ref } from "firebase/storage";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
-const Test = () => {
+const Subidas = ({ photo, slug }: { photo: any; slug: any }) => {
   const [imageList, setImageList] = useState<any>([]);
   const [imgData, setImgData] = useState<any>();
-
-  async function main() {
-    let folderNames;
-    const allFolder = ref(storage, "images/");
-    folderNames = await listAll(allFolder).then((res) => {
-      return res.prefixes.map((path) => path?._location?.path_);
-    });
-    const cleanFolderNames = folderNames.map((name) => name.replace("images/", ""));
-    console.log("folders", cleanFolderNames);
-  }
-main();
-
+  const [folders, setFolders] = useState<any>();
 
   useEffect(() => {
-    const allFolder = ref(storage, "images/");
+    const allFolder = ref(storage, "images");
     listAll(allFolder).then((res) => {
       const folderNames = res.prefixes.map((path) => path?._location?.path_);
+      setFolders(folderNames);
       folderNames.forEach((folderName) => {
         const pathsListRef = ref(storage, `${folderName}`);
         listAll(pathsListRef).then((response) => {
@@ -38,8 +28,11 @@ main();
     });
   }, []);
 
-  
-
+  const filteredImageList = imageList.filter((url) => {
+    return (
+      !url.includes("QR") && !folders.some((folder) => url.includes(folder))
+    );
+  });
   return (
     <>
       <MetaTag
@@ -49,18 +42,25 @@ main();
         image={"logo/svg"}
       />
       <section>
-        {imageList.map((url, i) => (
-          <Link
-            key={i}
-            href={url}
-            className="justify-center items-center"
-          >
-            <img key={i} src={url} />
-           </Link>
-        ))}
+        {filteredImageList.map((url, i) => {
+          const folder = folders.find((folder) =>
+            url.includes(folder.replace("images/", ""))
+          );
+          const folderName = folder ? folder : null;
+          const route = folderName.replace("images/", "").toLowerCase();
+          return (
+            <Link
+              key={i}
+              href={`/${route}`}
+              className="justify-center items-center"
+            >
+              <img key={i} src={url} className="rounded-lg mb-8"/>
+            </Link>
+          );
+        })}
       </section>
     </>
   );
 };
 
-export default Test;
+export default Subidas;
