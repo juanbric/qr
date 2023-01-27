@@ -12,6 +12,7 @@ const Subidas = ({ photo, slug }: { photo: any; slug: any }) => {
   useEffect(() => {
     const allFolder = ref(storage, "images");
     listAll(allFolder).then((res) => {
+      //@ts-ignore
       const folderNames = res.prefixes.map((path) => path?._location?.path_);
       setFolders(folderNames);
       folderNames.forEach((folderName) => {
@@ -20,7 +21,7 @@ const Subidas = ({ photo, slug }: { photo: any; slug: any }) => {
           response.items.forEach((item) => {
             setImgData(item);
             getDownloadURL(item).then((url) => {
-              setImageList((prev) => [...prev, url]);
+              setImageList((prev: any) => [...prev, url]);
             });
           });
         });
@@ -28,9 +29,10 @@ const Subidas = ({ photo, slug }: { photo: any; slug: any }) => {
     });
   }, []);
 
-  const filteredImageList = imageList.filter((url) => {
+  const filteredImageList = imageList.filter((url: any) => {
     return (
-      !url.includes("QR") && !folders.some((folder) => url.includes(folder))
+      !url.includes("QR") &&
+      !folders.some((folder: any) => url.includes(folder))
     );
   });
   return (
@@ -42,8 +44,8 @@ const Subidas = ({ photo, slug }: { photo: any; slug: any }) => {
         image={"logo/svg"}
       />
       <section>
-        {filteredImageList.map((url, i) => {
-          const folder = folders.find((folder) =>
+        {filteredImageList.map((url: any, i: any) => {
+          const folder = folders.find((folder: any) =>
             url.includes(folder.replace("images/", ""))
           );
           const folderName = folder ? folder : null;
@@ -54,7 +56,7 @@ const Subidas = ({ photo, slug }: { photo: any; slug: any }) => {
               href={`/${route}`}
               className="justify-center items-center"
             >
-              <img key={i} src={url} className="rounded-lg mb-8"/>
+              <img key={i} src={url} className="rounded-lg mb-8" />
             </Link>
           );
         })}
