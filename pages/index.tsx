@@ -15,8 +15,6 @@ import Spinner from "@/components/Spinner";
 
 export default function Home() {
   const [imageUpload, setImageUpload] = useState(null);
-  const [imageUrls, setImageUrls] = useState<any>([]);
-  const imagesListRef = ref(storage, "images/");
   const [qrCodes, setQrcodes] = useState([]);
   const [isUploaded, setIsUploaded] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -92,12 +90,13 @@ export default function Home() {
       <section>
         <input
           type="file"
+          className="file:mr-4 file:py-2 mb-8 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-700  file:text-white  hover:file:bg-[#DD3F31]"
           multiple
           onChange={(event: any) => {
             setImageUpload(event.target.files);
           }}
         />
-        <button onClick={uploadFile}> Upload</button>
+        <button onClick={uploadFile}  className="py-2 mb-8 px-4 rounded-lg border-0 text-sm font-semibold bg-gray-700  text-white  hover:bg-[#DD3F31]">Sube</button>
         {loading ? (
           <div className="flex">
             <Spinner />
