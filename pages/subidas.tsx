@@ -42,24 +42,26 @@ const Subidas = ({ photo, slug }: { photo: any; slug: any }) => {
         description={"Genera QR y pagina de individuo por cada foto subida"}
         url={undefined}
       />
-      <section>
-        {filteredImageList.map((url: any, i: any) => {
-          const folder = folders.find((folder: any) =>
-            url.includes(folder.replace("images/", ""))
-          );
-          const folderName = folder ? folder : null;
-          const route = folderName.replace("images/", "").toLowerCase();
-          return (
-            <Link
-              key={i}
-              href={`/${route}`}
-              className="justify-center items-center"
-            >
-              <img key={i} src={url} className="rounded-lg mb-8" />
-            </Link>
-          );
-        })}
-      </section>
+      <div className="flex items-center justify-center">
+        <section className="max-w-[600px]">
+          {filteredImageList.map((url: any, i: any) => {
+            const folder = folders.find((folder: any) =>
+              url.includes(folder.replace("images/", ""))
+            );
+            const folderName = folder ? folder : null;
+            const route = folderName?.replace("images/", "").toLowerCase();
+            return (
+              <Link
+                key={i}
+                href={`/${route}`}
+                className="justify-center items-center"
+              >
+                <img key={i} src={url} className="rounded-lg mb-8" />
+              </Link>
+            );
+          })}
+        </section>
+      </div>
     </>
   );
 };
