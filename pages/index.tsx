@@ -41,7 +41,7 @@ export default function Home() {
       const qrRef = ref(
         storage,
         //@ts-ignore
-        `images/${imageNameClean}/QR${imageUpload[i].name.replace(/\.[^/.]+$/, "")}`
+        `images/${imageNameClean}/QR${imageUpload[i].name}`
       );
 
       QRCode.toDataURL(url, { margin: 2 }, (err, url) => {
