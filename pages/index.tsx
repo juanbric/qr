@@ -3,13 +3,9 @@ import { useEffect, useState } from "react";
 import {
   ref,
   uploadBytes,
-  getDownloadURL,
-  listAll,
-  list,
 } from "firebase/storage";
 import { storage } from "../config/firebase";
 //@ts-ignore
-import { v4 } from "uuid";
 import QRCode from "qrcode";
 import Spinner from "@/components/Spinner";
 
@@ -45,7 +41,7 @@ export default function Home() {
       const qrRef = ref(
         storage,
         //@ts-ignore
-        `images/${imageNameClean}/QR${imageUpload[i].name}`
+        `images/${imageNameClean}/QR${imageUpload[i].name.replace(/\.[^/.]+$/, "")}`
       );
 
       QRCode.toDataURL(url, { margin: 2 }, (err, url) => {
