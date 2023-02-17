@@ -32,7 +32,7 @@ export default function Home() {
       const imageName = imageUpload[i].name;
       //@ts-ignore
       const imageNameClean = imageUpload[i].name.split(".").shift();
-      const url = `https://qr-photo-app.vercel.app/${imageName}`;
+      const url = `https://qr-photo-app.vercel.app/${imageNameClean}`;
       const imageRef = ref(
         storage,
         //@ts-ignore
