@@ -15,6 +15,7 @@ export default function Home() {
   const [isUploaded, setIsUploaded] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Refreshes the page after upload
   useEffect(() => {
     if (isUploaded) {
       setLoading(true);
@@ -28,20 +29,19 @@ export default function Home() {
     if (imageUpload == null) return;
     //@ts-ignore
     for (let i = 0; i < imageUpload.length; i++) {
+     // No caps, no space, no file extension
       //@ts-ignore
-      const imageName = imageUpload[i].name;
-      //@ts-ignore
-      const imageNameClean = imageUpload[i].name.split(".").shift();
+      const imageNameClean = imageUpload[i].name.split(".").shift().toLowerCase().replace(/\s+/g, '');
       const url = `https://qr-photo-app.vercel.app/${imageNameClean}`;
       const imageRef = ref(
         storage,
         //@ts-ignore
-        `images/${imageNameClean}/${imageUpload[i].name}`
+        `images/${imageNameClean}/${imageNameClean}`
       );
       const qrRef = ref(
         storage,
         //@ts-ignore
-        `images/${imageNameClean}/QR${imageUpload[i].name}`
+        `images/${imageNameClean}/QR${imageNameClean}`
       );
 
       QRCode.toDataURL(url, { margin: 2 }, (err, url) => {
@@ -57,13 +57,12 @@ export default function Home() {
         }
         var file = new Blob([u8arr], { type: mime });
         //Change the file name of the QR code to match that of the original image
-        const qrCodeFile = new File([file], `${imageName}`, {
+        const qrCodeFile = new File([file], `${imageNameClean}`, {
           type: "image/png",
         });
         //@ts-ignore
         qrCodes.push(qrCodeFile);
       });
-      // setQrcodes(qrCodes);
       console.log("url", url);
       console.log("qr", qrCodes[i]);
       console.log("img", imageUpload[i]);
