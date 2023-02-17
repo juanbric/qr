@@ -27,8 +27,7 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context: any) => {
   const slug = context.params.slug;
-  const upperCaseSlug = slug[0].toUpperCase() + slug.slice(1);
-  const specificFolder = ref(storage, `/images/${upperCaseSlug}`);
+  const specificFolder = ref(storage, `/images/${slug}`);
   const items = await listAll(specificFolder).then((res) => res.items);
   const imageList = await Promise.all(
     items.map(async (item) => await getDownloadURL(item))
@@ -43,7 +42,7 @@ const Slug = ({ photo, slug }: { photo: any; slug: any }) => {
   return (
     <>
       <MetaTag
-        title={slug[0].toUpperCase() + slug.slice(1)}
+        title={slug}
         description={slug[0].toUpperCase() + slug.slice(1)}
         url={slug[0].toUpperCase() + slug.slice(1)}
       />
@@ -52,7 +51,7 @@ const Slug = ({ photo, slug }: { photo: any; slug: any }) => {
         {photo
           .filter(
             (url: string) =>
-              !url.includes(`QR${slug[0].toUpperCase()}${slug.slice(1)}`)
+              !url.includes(`QR${slug}`)
           )
           .map((url: string, i: any) => (
             <img src={url} key={i} className="rounded-lg"/>
