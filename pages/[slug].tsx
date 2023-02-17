@@ -3,29 +3,7 @@ import { storage } from "@/config/firebase";
 import { getDownloadURL, listAll, ref } from "firebase/storage";
 import React, { useEffect, useState } from "react";
 
-export const getStaticPaths = async () => {
-  const allFolder = ref(storage, "/images");
-  const folderNames = await listAll(allFolder).then((res) => {
-    //@ts-ignore
-    return res.prefixes.map((path) => path?._location?.path_);
-  });
-  const cleanFolderNames = folderNames.map((name) =>
-    name.replace("images/", "")
-  );
-
-  const paths = cleanFolderNames.map((name) => {
-    return {
-      params: { slug: name.toLowerCase() },
-    };
-  });
-
-  return {
-    paths,
-    fallback: false,
-  };
-};
-
-export const getStaticProps = async (context: any) => {
+export const getServerSideProps = async (context: any) => {
   const slug = context.params.slug;
   const specificFolder = ref(storage, `/images/${slug}`);
   const items = await listAll(specificFolder).then((res) => res.items);
@@ -60,5 +38,4 @@ const Slug = ({ photo, slug }: { photo: any; slug: any }) => {
     </>
   );
 };
-
 export default Slug;
