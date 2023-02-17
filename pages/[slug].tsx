@@ -1,7 +1,7 @@
 import MetaTag from "@/components/MetaTag";
 import { storage } from "@/config/firebase";
 import { getDownloadURL, listAll, ref } from "firebase/storage";
-import React, { useEffect, useState } from "react";
+import { loadStripe } from "@stripe/stripe-js";
 
 export const getServerSideProps = async (context: any) => {
   const slug = context.params.slug;
@@ -16,7 +16,32 @@ export const getServerSideProps = async (context: any) => {
 };
 
 const Slug = ({ photo, slug }: { photo: any; slug: any }) => {
-  console.log("", photo);
+ 
+  //Stripe
+  async function checkout({ lineItems }: { lineItems: any }) {
+    //@ts-ignore
+    let stripePromise = null;
+  
+    const getStripe = () => {
+      //@ts-ignore
+      if (!stripePromise) {
+        //@ts-ignore
+        stripePromise = loadStripe(process.env.NEXT_PUBLIC_API_KEY);
+      }
+      return stripePromise;
+    };
+  
+    const stripe = await getStripe();
+  
+    await stripe.redirectToCheckout({
+      mode: "payment",
+      lineItems,
+      successUrl: `${window.location.origin}/${slug}?payment=success`,
+      cancelUrl: window.location.origin,
+    });
+  }
+
+
   return (
     <>
       <MetaTag
