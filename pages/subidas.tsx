@@ -31,7 +31,7 @@ const Subidas = ({ photo, slug }: { photo: any; slug: any }) => {
 
   const filteredImageList = imageList.filter((url: any) => {
     return (
-      !url.includes("QR") &&
+      url.includes("QR") &&
       !folders.some((folder: any) => url.includes(folder))
     );
   });
@@ -51,6 +51,8 @@ const Subidas = ({ photo, slug }: { photo: any; slug: any }) => {
             const folderName = folder ? folder : null;
             const route = folderName?.replace("images/", "").toLowerCase();
             return (
+              <>
+              <p>{route}</p>
               <Link
                 key={i}
                 href={`/${route}`}
@@ -58,6 +60,7 @@ const Subidas = ({ photo, slug }: { photo: any; slug: any }) => {
               >
                 <img key={i} src={url} className="rounded-lg mb-8" />
               </Link>
+              </>
             );
           })}
         </section>
